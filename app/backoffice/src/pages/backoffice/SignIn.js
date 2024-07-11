@@ -1,23 +1,60 @@
+import axios from "axios";
+import { useState } from "react";
+import Swal from "sweetalert2";
+import config from "../../config";
+import { useNavigate } from "react-router-dom";
+
 function SignIn() {
+  const [user, setUser] = useState({});
+  const navigate = useNavigate();
+
+  const handleSignIn = async () => {
+    try {
+      const res = await axios.post(config.apiPath + "/user/signIn", user);
+
+      if (res.data.token !== undefined) {
+        localStorage.setItem("token", res.data.token);
+        navigate("/home");
+      }
+    } catch (e) {
+      if (e.response.status === 401) {
+        Swal.fire({
+          title: "Sign",
+          text: "username or password invalid",
+          icon: "warning",
+        });
+      } else {
+        Swal.fire({
+          title: "error",
+          text: e.message,
+          icon: "error",
+        });
+      }
+    }
+  };
+
   return (
     <div className="hold-transition login-page">
       <div className="login-box">
         <div className="login-logo">
           <a href="../../index2.html">
-            <b>Admin</b>LTE
+            <b>Comm</b>LAB
           </a>
         </div>
 
         <div className="card">
           <div className="card-body login-card-body">
-            <p className="login-box-msg">Sign in to start your session</p>
+            <p className="login-box-msg">เข้าสู่ระบบ</p>
 
-            <form action="../../index3.html" method="post">
+            <div>
               <div className="input-group mb-3">
                 <input
+                  onChange={(e) =>
+                    setUser({ ...user, username: e.target.value })
+                  }
                   type="email"
                   className="form-control"
-                  placeholder="Email"
+                  placeholder="Username"
                 />
                 <div className="input-group-append">
                   <div className="input-group-text">
@@ -27,6 +64,9 @@ function SignIn() {
               </div>
               <div className="input-group mb-3">
                 <input
+                  onChange={(e) =>
+                    setUser({ ...user, password: e.target.value })
+                  }
                   type="password"
                   className="form-control"
                   placeholder="Password"
@@ -46,12 +86,16 @@ function SignIn() {
                 </div>
 
                 <div className="col-4">
-                  <button type="submit" className="btn btn-primary btn-block">
+                  <button
+                    onClick={handleSignIn}
+                    type="submit"
+                    className="btn btn-primary btn-block"
+                  >
                     Sign In
                   </button>
                 </div>
               </div>
-            </form>
+            </div>
 
             <div className="social-auth-links text-center mb-3">
               <p>- OR -</p>
