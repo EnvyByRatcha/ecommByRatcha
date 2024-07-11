@@ -1,6 +1,6 @@
 function Header() {
   return <div >
-    Header
+    <div className='container'>GYM&&LAB</div>
   </div>;
 }
 
