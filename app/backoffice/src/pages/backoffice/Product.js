@@ -47,21 +47,30 @@ function Product() {
           product,
           config.headers
         );
+
+        if (res.data.message === "success") {
+          Swal.fire({
+            title: "เพิ่มสินค้า",
+            text: "เพิ่มสินค้า " + product.name + " แล้ว",
+            icon: "success",
+            timer: 2000,
+          });
+        }
       } else {
         res = await axios.put(
           config.apiPath + "/product/updateProduct",
           product,
           config.headers
         );
-      }
 
-      if (res.data.message === "success") {
-        Swal.fire({
-          title: "เพิ่มสินค้าสำเร็จ",
-          text: "เพิ่มสินค้า " + product.name + " แล้ว",
-          icon: "success",
-          timer: 2000,
-        });
+        if (res.data.message === "success") {
+          Swal.fire({
+            title: "แก้ไขเพิ่มสินค้า",
+            text: "แก้ไขสินค้า " + product.name + " แล้ว",
+            icon: "success",
+            timer: 2000,
+          });
+        }
       }
 
       document.getElementById("modalProduct_btnClose").click();
@@ -83,7 +92,7 @@ function Product() {
       price: "",
     });
 
-    setImg({});
+    setImg(null);
     refImg.current.value = "";
   };
 
@@ -161,7 +170,7 @@ function Product() {
   };
 
   const showImg = (item) => {
-    if (item.img !== "") {
+    if (item.img !== undefined && item.img !== "") {
       return (
         <img
           alt=""
@@ -291,7 +300,7 @@ function Product() {
         <div>
           <div>ชื่อสินค้า</div>
           <input
-            value={product.name}
+            value={product.name === undefined ? "" : product.name}
             onChange={(e) => setProduct({ ...product, name: e.target.value })}
             className="form-control"
           />
@@ -300,7 +309,7 @@ function Product() {
         <div className="mt-2">
           <div>ราคาต้นทุน</div>
           <input
-            value={product.cost}
+            value={product.cost === undefined ? "" : product.cost}
             onChange={(e) => setProduct({ ...product, cost: e.target.value })}
             className="form-control"
           />
@@ -309,7 +318,7 @@ function Product() {
         <div className="mt-2">
           <div>ราคาขาย</div>
           <input
-            value={product.price}
+            value={product.price === undefined ? "" : product.price}
             onChange={(e) => setProduct({ ...product, price: e.target.value })}
             className="form-control"
           />
@@ -332,7 +341,8 @@ function Product() {
 
         <div className="mt-5">
           <button onClick={handleAddProduct} className="btn btn-primary">
-            <i className="fa fa-check mr-2"></i>เพื่มสินค้า
+            <i className="fa fa-check mr-2"></i>
+            {product.id === undefined ? "เพื่มสินค้า" : "แก้ไขสินค้า"}
           </button>
         </div>
       </Modal>
